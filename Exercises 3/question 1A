@@ -1,0 +1,35 @@
+.data
+	resultado: .asciiz "O resultado é:"
+	texto1: .asciiz "Digite dois números inteiros: " 
+.text
+	li $v0, 4		# Codigo referente para impressao na tela. 
+	la $a0, texto1		# Imprimi na tela conteudo do label texto1.
+	syscall 		# Faz a chamada do SO.
+	
+	li $v0, 5		# Codigo referente a leitura apartir do teclado de um numero inteiro.
+	syscall			# Faz a chamada do SO.
+	move $a0, $v0		# Move o numero lido para $a0.
+	
+	
+	li $v0, 5		# Codigo referente a leitura apartir do teclado de um numero inteiro.
+	syscall 		# Salva o numero lido no registrador $f0.
+	move $a1, $v0		# Move o numero lido para $a1.
+	
+	jal func		# Chama a função com os argumentos em $a0 e $a1.
+	move $s0, $a0		# Move o valor do retrono da função para $s0.
+	
+	li $v0, 4		# Codigo referente para impressao na tela. 
+	la $a0, resultado	# Imprimi na tela conteudo do label entrada.
+	syscall 		# Faz a chamada do SO.
+	
+	li $v0, 1		# carrega o código de imprimir inteiro.
+	move $a0, $s0		# atrbui o valor do retorno da função para ser imprimido.
+	syscall			# chama o SO para realizar a operação.
+		
+	li $v0, 10		# codigo referente ao fim do programa.
+	syscall			# chama o SO para realizar a operação.
+	
+func:
+	mul $t0, $a0, $a1	# Multiplica $a0 por $a1.
+	addi $a0, $t0, 10	# Soma $t0 com 10.
+	jr $ra			# Retorna para o que chamou.

@@ -1,0 +1,81 @@
+.data
+	texto: .asciiz "Digite os valores e A, B e C respectivamente:"
+	texto1: .asciiz "As raizes são: "
+	texto2: .asciiz " e "
+	quatro: .float 4
+	negat: .float -1
+	dois: .float 2
+.text
+		li $v0, 4		# Codigo referente para impressao na tela. 
+		la $a0, texto		# Imprimi na tela conteudo do label texto.
+		syscall 		# Faz a chamada do SO.
+		
+		#A
+		li $v0, 6		# Codigo referente a leitura apartir do teclado de um numero float
+		syscall 		# Salva o numero lido no registrador $f0
+		mov.s $f1,$f0		
+		
+		#B
+		li $v0, 6		# Codigo referente a leitura apartir do teclado de um numero float
+		syscall 		# Salva o numero lido no registrador $f0
+		mov.s $f2,$f0
+		
+		#C
+		li $v0, 6		# Codigo referente a leitura apartir do teclado de um numero float
+		syscall 		# Salva o numero lido no registrador $f0
+		mov.s $f3,$f0
+		
+		lwc1 $f0, quatro
+		mov.s $f4, $f0		# 4
+		
+		lwc1 $f0, negat
+		mov.s $f10, $f0		# -1
+		
+		lwc1 $f0, dois
+		mov.s $f11, $f0		# 2
+		
+		li $v0, 4		# Codigo referente para impressao na tela 
+		la $a0, texto1		# Imprimi na tela conteudo do label texto1
+		syscall 		# Faz a chamada do SO
+		
+		jal positivo
+		
+		li $v0, 2		# Codigo referente para imprimir ponto flutante na tela
+		syscall			# Faz a chamada do SO
+		
+		li $v0, 4		# Codigo referente para impressao na tela 
+		la $a0, texto2		# Imprimi na tela conteudo do label texto1
+		syscall 		# Faz a chamada do SO
+		
+		jal negativo
+		
+		li $v0, 2		# Codigo referente para imprimir ponto flutante na tela
+		syscall			# Faz a chamada do SO
+		
+		li $v0, 10		# Codigo referente para encerrar programa
+		syscall	
+	
+		# (-b + sqrt(b²-4ac))/ 2a
+	positivo:
+		mul.s $f5, $f1, $f3	# $f5 = A * C
+		mul.s $f6, $f4, $f5	# 4 * $f5
+		mul.s $f5, $f2, $f2	# B²
+		sub.s $f8, $f5, $f6	# B² - $f6
+		sqrt.s $f6, $f8		# raiz(B² - $f6)
+		mul.s $f5, $f2, $f10 	# $f5 = -B
+		add.s $f7, $f5, $f6	# $f7 = $f5 + $f6
+		mul.s $f5, $f1, $f11	# $f5 = A * 2
+		div.s $f12, $f7, $f5	# $f12 = $f7 / $f5
+		jr $ra
+	negativo:
+		mul.s $f5, $f1, $f3	# $f5 = A * C
+		mul.s $f6, $f4, $f5	# 4 * $f5
+		mul.s $f5, $f2, $f2	# B²
+		sub.s $f8, $f5, $f6	# B² - $f6
+		sqrt.s $f6, $f8		# raiz(B² - $f6)
+		mul.s $f5, $f2, $f10 	# $f5 = -B
+		sub.s $f7, $f5, $f6	# $f7 = $f5 - $f6
+		mul.s $f5, $f1, $f11	# $f5 = A * 2
+		div.s $f12, $f7, $f5	# $f12 = $f7 / $f5
+		jr $ra	
+		

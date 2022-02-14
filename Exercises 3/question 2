@@ -1,0 +1,35 @@
+.data
+	texto1: .asciiz "Digite um número inteiro: "
+	resposta1: .asciiz "Não é múltiplo de 5."
+	resposta2: .asciiz "É múltiplo de 5."
+.text
+	li $v0, 4		# Codigo referente para impressao na tela.
+	la $a0, texto1		# Imprimi na tela conteudo do label texto1.
+	syscall 		# Faz a chamada do SO.
+	
+	li $v0, 5		# Codigo referente a leitura apartir do teclado de um numero inteiro.
+	syscall			# Faz a chamada do SO.
+	move $a0, $v0		# Move o numero lido para $a0.
+	
+	jal func
+	
+func:
+	addi $t1, $zero, 5	# $t1 recebe 5.
+	div $a0, $t1		# O resto da divisão é armazenado no registrador HI.
+	mfhi $t2
+	bne $t2, $zero, naoMult	#Se o resto for diferente de zero não é multiplo,
+				#se for igual é multiplo de 5.
+	li $v0, 4		# Codigo referente para impressao na tela.
+	la $a0, resposta2	# Imprimi na tela conteudo do label resposta2.
+	syscall 		# Faz a chamada do SO.
+	
+	li $v0, 10		# codigo referente ao fim do programa.
+	syscall			# chama o SO para realizar a operação.
+
+naoMult:
+	li $v0, 4		# Codigo referente para impressao na tela.
+	la $a0, resposta1	# Imprimi na tela conteudo do label resposta1.
+	syscall 		# Faz a chamada do SO.
+	
+	li $v0, 10		# codigo referente ao fim do programa.
+	syscall			# chama o SO para realizar a operação.

@@ -1,0 +1,85 @@
+.data
+	texto1: .asciiz "Digite dois números inteiro: "
+	texto2: .asciiz " é o maior."
+	texto3: .asciiz " é o menor. "
+	texto4: .asciiz "São iguais."
+	space: .asciiz "\n"
+.text 
+		li $v0, 4		# Codigo referente para impressao na tela. 
+		la $a0, texto1		# Imprimi na tela conteudo do label texto1.
+		syscall 		# Faz a chamada do SO.
+		
+		li $v0, 6		# Codigo referente a leitura apartir do teclado de um numero float
+		syscall 		# Salva o numero lido no registrador $f0
+		mov.s $f4,$f0
+		 			
+		li $v0, 6		# Codigo referente a leitura apartir do teclado de um numero float
+		syscall 		# Salva o numero lido no registrador $f0
+		mov.s  $f6,$f0
+		
+		mov.s   $f0, $f4
+		mov.s  $f2, $f6
+		
+		jal func
+	func:
+		c.lt.s  $f0,$f2         # Se A < B?
+        	bc1t    imprimi1        # Se sim vá pra imprimi1
+		
+		c.lt.s  $f2,$f0         # Se B < A?
+        	bc1t    imprimi2        # Se sim vá pra imprimi2	
+					
+					# Caso A == B
+		li $v0, 4		# Codigo referente para impressao na tela. 
+		la $a0, texto4		# Imprimi na tela conteudo do label texto4.
+		syscall 		# Faz a chamada do SO.
+	
+		li $v0, 10		# Codigo referente para encerrar programa
+		syscall
+		
+	imprimi1:	 		# Caso primeiro valor digitado seja menor que o segundo
+		mov.s $f12, $f2
+		li $v0, 2		# Codigo referente para imprimir ponto flutante na tela
+		syscall			# Faz a chamada do SO
+		
+		li $v0, 4		# Codigo referente para impressao na tela. 
+		la $a0, texto2		# Imprimi na tela conteudo do label texto2.
+		syscall 		# Faz a chamada do SO.
+		
+		li $v0, 4		# Codigo referente para impressao na tela. 
+		la $a0, space		# Imprimi na tela conteudo do label space.
+		syscall 		# Faz a chamada do SO.
+		
+		mov.s $f12, $f0
+		li $v0, 2		# Codigo referente para imprimir ponto flutante na tela
+		syscall			# Faz a chamada do SO
+		
+		li $v0, 4		# Codigo referente para impressao na tela. 
+		la $a0, texto3		# Imprimi na tela conteudo do label texto3.
+		syscall 		# Faz a chamada do SO.
+		
+		li $v0, 10		# Codigo referente para encerrar programa
+		syscall
+			
+	imprimi2:			# Caso o segundo numero seja menor que o primeiro
+		mov.s $f12, $f2		
+		li $v0, 2		# Codigo referente para imprimir ponto flutante na tela
+		syscall			# Faz a chamada do SO
+		
+		li $v0, 4		# Codigo referente para impressao na tela. 
+		la $a0, texto3		# Imprimi na tela conteudo do label texto3.
+		syscall 		# Faz a chamada do SO.
+		
+		li $v0, 4		# Codigo referente para impressao na tela. 
+		la $a0, space		# Imprimi na tela conteudo do label texto1.
+		syscall 		# Faz a chamada do SO.
+		
+		mov.s $f12, $f0
+		li $v0, 2		# Codigo referente para imprimir ponto flutante na tela
+		syscall			# Faz a chamada do SO
+		
+		li $v0, 4		# Codigo referente para impressao na tela. 
+		la $a0, texto2		# Imprimi na tela conteudo do label texto2.
+		syscall 		# Faz a chamada do SO.
+		
+		li $v0, 10		# Codigo referente para encerrar programa
+		syscall	
