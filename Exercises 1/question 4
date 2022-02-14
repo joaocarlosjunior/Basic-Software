@@ -1,0 +1,4 @@
+.text
+ori $t3,$0,0xffaa
+addi $t4,$0,0x00ff
+and $s1,$t3,$t4

@@ -1,0 +1,34 @@
+.data 
+	vetor:.word 2, 3, 7, 4, 4, 1, 2, 5, 9, 11, 21, 3, 10, 14, 18, 16
+	resultado: .word 0 #A soma dos impares nesse caso tem que ser 57
+	
+.text 
+	main:
+		move $t0, $zero 	# $t0 = 0	(i = 0)
+		move $t1, $zero 	# $t1 = 0 
+		li   $t2, 64		# tamanho do array
+		move $s0, $zero		# resultado = 0
+		la   $s1,vetor		# Gera ponteiro para vetor em $s1
+		move $t3,$zero
+		
+	loop:
+		beq  $t3, $t2,fimLoop	# $t4 == $t2 desvia para fimLoop
+		andi $t1, $t1,1		# Este AND escreve 1 em $t2 se for impar 
+		beq  $t1, $zero,incLoop	# Salta se não for impar
+		lw   $t5, 0($s1)	# Ler o elemento do vetor
+		add  $s0, $s0,$t5	# Faz a soma de resultado com elemento do vetor da posição impar	
+		j loopend
+	incLoop:
+		addi $s1, $s1, 4	# Avança ponteiro para próximo elemento
+		addi $t3, $t3, 4	# Avança 4 no vetor
+		addi $t1, $t1,1		# $t1 = $t1 + 1
+		j loop
+	fimLoop:
+		la   $t0, resultado	# Obtem o ponteiro para label resultado 
+		sw   $s0, 0($t0)	# Escreve o resultado na variavel resultado
+		li   $v0, 1		# Codigo para imprimir inteiro
+		lw   $a0, ($t0)
+		syscall
+		
+		
+	

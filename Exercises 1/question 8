@@ -1,0 +1,45 @@
+#int f;
+#main(){
+#	int g;
+#	int V[4];
+#	g = 1;
+#	f = 5;
+#	for (i = 0; i<4; i++){
+#	    	V[i] = f – g;
+#		g = g + i;
+#	}
+#}
+#$t0 = i, $s0 = g, $s1 = f 
+.data
+		V:
+	 	.align 2
+	 	.space 16	#aloca 4 espaços no array
+.text
+	main:
+		move $t0, $zero 	# $t0 = 0	(i = 0)
+		move $t4,$zero
+		li $t1, 16		# tamanho do array
+		li $t2, 1		# $s0 = 1	(g = 1)
+		li $s1, 5		# $s1 = 5	(f = 5)
+	
+	loop:
+	  	beq $t0, $t1,fimLoop	#$t0 == $t1 desvia para fimLoop
+	  	sub $t3, $s1,$t2	# atribui a $t3 = f - g
+	  	sw $t3,V($t0) 		# carrega em V[i] = $t3
+	  	add $t2,$t2,$t4		# g = g + i
+	  	add $t4,$t4,1		#i = i + 1
+	  	addi $t0,$t0,4		# Avança ponteiro para próximo elemento
+	  	j loop
+	
+	fimLoop:
+		move $t0, $zero
+		imprime:
+			beq $t0, $t1,saiImpressao
+			li $v0,1
+			lw $a0,V($t0)
+			syscall 
+	  		addi $t0,$t0,4		
+	  		j imprime
+	  	
+	  	saiImpressao:
+			

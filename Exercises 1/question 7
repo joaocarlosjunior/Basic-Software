@@ -1,0 +1,32 @@
+#int a[6] = {2, -6, -2, 4, 10, 3, 7};
+#int c[4] = {3, 0, 1, -15, -20};
+#int b[4];
+#b[0] = a[1] + c[2]*8;
+.data 
+	a: .word 2, -6, -2, 4, 10, 3, 7
+	c: .word 3, 0, 1, -15, -20
+	b:
+	  .align 2
+	  .space 16 #aloca 4 espaços no array
+
+.text
+	li $t0,2 		# indice 2
+	li $t1,1		# indice 1
+	sll $t0,$t0,2		# 4 * $t0
+	sll $t1,$t1,2		# 4 * $t1	
+	la $t2,c		# carrega o endereco do label c em $t2
+	la $t3,a		# carrega o endereco do label a em $t3
+	add $t2,$t2,$t0		# endereco total onde está c[2]
+	add $t3,$t3,$t1		# endereco total onde está a[1]
+	lw $t0,0($t2) 		# $t0 = c[2]
+	lw $t1,0($t3)		# $t1 = a[1]
+	li $s0,8		# $s0 = 8
+	mul $t0,$t0,$s0 	# $t0 = valor que está em c[2] * 8
+	add $s0,$t1,$t0		# $t1 = valor que está em a[1] + $t0
+	move $t0,$zero		#$t0 = 0
+	sw $s0,b($t0) 		#insere em b[0] o valor de $t1
+	
+	
+	
+	
+	
