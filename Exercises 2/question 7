@@ -1,0 +1,57 @@
+.data
+	x: .word 10, 20, 30, 40, 50
+	texto1: .asciiz "MAX: "	
+.text
+	main:
+		la $a0,x		# gera ponteiro para x em $a0
+		addi $a1,$zero,5	# atribui em $a1 = 5
+		jal max			# chama a função max e passa os regisradores $a0 e $a1
+		
+		add $a0,$v0,$zero 
+		move $s0,$a0		# valor de retorno está em $s2
+		
+		# MAX:
+		li $v0, 4		# carrega o código de imprimir string
+		la $a0, texto1		# carrega o endereço da string a ser impressa em a0
+		syscall			# chama o SO para realizar a operação
+		
+		li $v0, 1		# carrega o código de imprimir inteiro
+		move $a0, $s0		# atrbui o valor do retorno da função para ser imprimido
+		syscall			# chama o SO para realizar a operação
+		
+		li $v0, 10		# codigo referente ao fim do programa
+		syscall			# chama o SO para realizar a operação
+	
+	max:
+		addi $sp, $sp, -12	# Abri espaço na pilha para 3 registro
+    		sw $ra, 8($sp) 		# Salva $ra na pilha
+    		sw $s1, 4($sp) 		# Salva $s0 na pilha
+    		sw $s0, 0($sp) 		# Salva $s1 na pilha
+    		
+    		move $s1, $a0		# move conteudo de $a0 para $s1(array)
+    		move $s0, $a1		# move conteudo de $a1 para $s0(tamanho do array)
+    		
+    		lw $t0,0($s1)		# max = array[0]
+    		
+    		li $t1,1		# i = 1
+    	for:
+    		lw $t2,0($s1)		# ler o elemento do vetor
+    		ble $t2,$t0,incLoop	# se o elemento do vetor for menor ou
+    					# igual a n, ele avança pro proximo elemento 
+    		add $t0,$zero,$t2	# max = array[i] 	
+    		add $v0,$zero,$t0
+    		beq $t1,$s0,fimFor	# i == n
+    		j incLoop
+    	incLoop:
+		addi $s1, $s1, 4	# Avança ponteiro para próximo elemento
+		addi $t1,$t1,1		# i = i + 1
+		j for	
+    	
+    	fimFor:
+    		lw $ra, 8($sp)			# restaura $ra da pilha
+		lw $s0, 4($sp)			# restaura $s0 da pilha
+		lw $s1, 0($sp)			# restaura $s1 da pilha
+		addi $sp, $sp, 12		# restaura pronteiro da pilha
+		jr $ra				# retorna pro procedimento que chamou
+    		
+    		

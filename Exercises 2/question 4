@@ -1,0 +1,36 @@
+.data
+	msg: .asciiz "result is: "	# declara string com label msg
+	str: .asciiz "abracadabra"	# declara string com label str
+.text
+	_main:
+		la $a0, str		# gera ponteiro para str em $a0
+		jal _proc		# chama a função com argumento $a0
+		
+		add $s0, $v0, $zero	# atribui o valor do retorno da função
+					# anterior em $s0.
+		la $a0, msg		# Gera ponteiro para msg em $a0
+		addiu $v0, $zero, 4	# carrega o código de imprimir string
+		syscall			# chama o SO para realizar a operação
+		
+		add $a0, $s0, $zero	# atribui a $a0 o valor do retorno 
+					# da função _proc
+		addiu $v0, $zero, 1	# carrega o código de imprimir inteiro
+		syscall			# chama o SO para realizar a operação
+		
+		addiu $v0, $zero, 10	# carrega o código da operação para 
+					# encerrar o programa
+		syscall			# chama o SO para realizar a operação
+	#Função _proc
+	_proc:
+		addiu $v0, $zero, 0	# atribui 0 ao registrador que retorna
+					# com resultado da função
+	_loop:
+		lb $t0, 0($a0)		# lê o byte de origem de $a0
+		beqz $t0, _exit		# se $t0 for igual 0 faça 
+					# PC = 4,se não PC = PC + 4 e vai pra _exit
+		addiu $v0, $v0, 1 	# incrementa o registrador de retorno + 1
+		addiu $a0, $a0, 1	# incrementa $a0 + 1
+		j _loop			# volta pra _loop
+	_exit:
+		jr $ra			# retorna pro procedimento que chamou 
+					# com resultado em $v0

@@ -1,0 +1,59 @@
+# $t0 é n / $t1 é i / $t2 é f  
+.data
+	texto1: .asciiz " "
+	texto2: .asciiz "\n"
+.text
+	main:
+		li $t0, 5		# n = 5
+		li $t1, 1		# i = 1
+		li $t2, 1		# f = 1
+	
+	do:
+		mul $t2,$t2,$t1		# f = f * i
+		addi $t1,$t1,1		# i = i + 1
+		ble $t1,$t0,do		# i <= n volta pro do, se não continua
+		
+		li $v0,1		# carrega o código de imprimir inteiro
+		move $a0, $t0		# move o inteiro para a0
+		syscall 		# chama o SO para realizar a operação
+		
+		li $v0, 4		# carrega o código de imprimir string
+		la $a0, texto1		# carrega o endereço da string a ser impressa em a0
+		syscall			# chama o SO para realizar a operação
+			
+		li $v0,1		# carrega o código de imprimir inteiro
+		move $a0, $t2		# move o inteiro para a0
+		syscall 		# chama o SO para realizar a operação
+		
+		li $v0, 4		# carrega o código de imprimir string
+		la $a0, texto2		# carrega o endereço da string a ser impressa em a0
+		syscall			# chama o SO para realizar a operação
+		
+		li $t2, 1		# f = 1
+		move $t1, $t0		# i = n
+	while:
+		beq $t1, $zero, fimWhile# Se $t1 == $zero vai para fimWhile, se não continua
+		mul $t2, $t2, $t1	# $t2 = $t2 * $t1
+		sub $t1,$t1,1		# $t1 = $t1 - 1
+		j while			#jumper para while
+	
+	fimWhile:
+		li $v0,1		# carrega o código de imprimir inteiro
+		move $a0, $t0		# move o inteiro para a0
+		syscall 		# chama o SO para realizar a operação
+		
+		li $v0, 4		# carrega o código de imprimir string
+		la $a0, texto1		# carrega o endereço da string a ser impressa em a0
+		syscall			# chama o SO para realizar a operação
+		
+		li $v0,1		# carrega o código de imprimir inteiro
+		move $a0, $t2		# move o inteiro para a0
+		syscall 		# chama o SO para realizar a operação
+		
+		li $v0, 4		# carrega o código de imprimir string
+		la $a0, texto2		# carrega o endereço da string a ser impressa em a0
+		syscall			# chama o SO para realizar a operação
+		
+		li $v0, 10 		# carrega o código da operação para terminar o programa
+		syscall			# chama o SO para realizar a operação
+		

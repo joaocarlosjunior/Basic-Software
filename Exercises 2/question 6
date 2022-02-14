@@ -1,0 +1,86 @@
+.data
+	texto1: .asciiz "mdc("
+	texto2: .asciiz ","
+	texto3: .asciiz ") = "
+	endLine: .asciiz "\n"
+.text
+	main:
+    		li $v0, 5		# carrega o código de ler inteiro
+		syscall 
+		move $a0,$v0		# valor fornecido de i está em $a0
+		add $s0,$a0,$zero	# valor de i está em $s0
+	
+		li $v0, 5		# carrega o código de ler inteiro
+		syscall
+		move $a1,$v0		# valor fronecido de j está em $a1
+    		add $s1,$a1,$zero	# valor de j está em $s1
+    		jal GCD 		# chama a função com argumento em $a0 e $a1
+    	
+		add $a0,$v0,$zero 
+		move $s2,$a0		# valor de retorno está em $s2
+	
+		# mcd(
+		li $v0, 4		# carrega o código de imprimir string
+		la $a0, texto1		# carrega o endereço da string a ser impressa em a0
+		syscall			# chama o SO para realizar a operação
+	
+		# i
+		li $v0,1		# carrega o código de imprimir inteiro
+		move $a0, $s0		# move o inteiro para a0
+		syscall 		# chama o SO para realizar a operação
+	
+		# ,
+		li $v0, 4		# carrega o código de imprimir string
+		la $a0, texto2		# carrega o endereço da string a ser impressa em a0
+		syscall			# chama o SO para realizar a operação
+	
+		# j
+		li $v0,1		# carrega o código de imprimir inteiro
+		move $a0, $s1		# move o inteiro para a0
+		syscall 		# chama o SO para realizar a operação
+	
+		# ) =
+		li $v0, 4		# carrega o código de imprimir string
+		la $a0, texto3		# carrega o endereço da string a ser impressa em a0
+		syscall			# chama o SO para realizar a operação
+	
+		# imprimi o valor do retorno da função
+		li $v0,1		# carrega o código de imprimir inteiro
+		move $a0, $s2		# move o inteiro para a0
+		syscall 		# chama o SO para realizar a operação
+	
+		# \n
+		li $v0, 4		# carrega o código de imprimir string
+		la $a0, endLine		# carrega o endereço da string a ser impressa em a0
+		syscall			# chama o SO para realizar a operação
+	
+		li $v0, 10 		# carrega o código da operação para terminar o programa
+		syscall			# chama o SO para realizar a operação
+	
+	GCD:
+    		addi $sp, $sp, -12	# abri espaço na pilha para 3 registro
+    		sw $ra, 0($sp) 		# Salva $ra na pilha
+    		sw $s0, 4($sp) 		# Salva $s0 na pilha
+    		sw $s1, 8($sp) 		# Salva $s1 na pilha
+
+    		add $s0, $a0, $zero 	# s0 = a0 (valor de i) 
+    		add $s1, $a1, $zero 	# s1 = a1 (valor de j)
+    		li $t1,0 		# $t1 = 0
+    		beq $s1, $t1, retorna1 	# if s1 == 0 retorna1
+    		add $a0, $s1, $zero 	# atribui a0 = $s1
+    		div $s0, $s1 		# o resto é armazenado no registrador HI
+    		mfhi $a1 		# move de HI para $a1
+
+    		jal GCD			# chama a função com arguemento $a1
+
+    	retorna1:
+    		add $v0, $zero, $s0 	# retorna $v0 que é igual a i
+    		j saidaGCD
+
+	saidaGCD:
+    		lw $ra, 0 ($sp)  	# restaura $ra da pilha
+    		lw $s0, 4 ($sp)		# restaura $s0 da pilha
+    		lw $s1, 8 ($sp)		# restaura $s1 da pilha
+    		addi $sp,$sp , 12 	# restaura ponteiro da pilha
+    		jr $ra			# retorna para o procedimento que chamou
+	
